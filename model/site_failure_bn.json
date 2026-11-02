@@ -1,0 +1,156 @@
+{
+  "version": "0.1.0",
+  "nodes": {
+    "Cause": {
+      "type": "cause",
+      "states": [
+        "dns_failure",
+        "tls_cert_expired",
+        "server_overload",
+        "site_db_failure",
+        "bad_release",
+        "cdn_failure",
+        "geo_ip_block",
+        "webserver_misconfig",
+        "disk_full",
+        "ddos_attack"
+      ]
+    },
+    "site_unreachable":              { "type": "symptom", "states": ["absent", "present"] },
+    "dns_error_in_browser":          { "type": "symptom", "states": ["absent", "present"] },
+    "reachable_by_ip_not_by_name":   { "type": "symptom", "states": ["absent", "present"] },
+    "unavailable_from_some_regions": { "type": "symptom", "states": ["absent", "present"] },
+    "browser_cert_warning":          { "type": "symptom", "states": ["absent", "present"] },
+    "http_500":                      { "type": "symptom", "states": ["absent", "present"] },
+    "http_502":                      { "type": "symptom", "states": ["absent", "present"] },
+    "http_503":                      { "type": "symptom", "states": ["absent", "present"] },
+    "http_504":                      { "type": "symptom", "states": ["absent", "present"] },
+    "db_error_in_page":              { "type": "symptom", "states": ["absent", "present"] },
+    "slow_loading":                  { "type": "symptom", "states": ["absent", "present"] },
+    "partial_content":               { "type": "symptom", "states": ["absent", "present"] },
+    "static_assets_missing":         { "type": "symptom", "states": ["absent", "present"] },
+    "started_after_release":         { "type": "symptom", "states": ["absent", "present"] },
+    "write_operations_fail":         { "type": "symptom", "states": ["absent", "present"] }
+  },
+  "edges": [
+    ["Cause", "site_unreachable"],
+    ["Cause", "dns_error_in_browser"],
+    ["Cause", "reachable_by_ip_not_by_name"],
+    ["Cause", "unavailable_from_some_regions"],
+    ["Cause", "browser_cert_warning"],
+    ["Cause", "http_500"],
+    ["Cause", "http_502"],
+    ["Cause", "http_503"],
+    ["Cause", "http_504"],
+    ["Cause", "db_error_in_page"],
+    ["Cause", "slow_loading"],
+    ["Cause", "partial_content"],
+    ["Cause", "static_assets_missing"],
+    ["Cause", "started_after_release"],
+    ["Cause", "write_operations_fail"]
+  ],
+  "priors": {
+    "dns_failure": 0.10,
+    "tls_cert_expired": 0.10,
+    "server_overload": 0.16,
+    "site_db_failure": 0.08,
+    "bad_release": 0.18,
+    "cdn_failure": 0.08,
+    "geo_ip_block": 0.05,
+    "webserver_misconfig": 0.12,
+    "disk_full": 0.08,
+    "ddos_attack": 0.05
+  },
+  "cpts": {
+    "site_unreachable": {
+      "dns_failure": 0.85, "tls_cert_expired": 0.25, "server_overload": 0.25,
+      "site_db_failure": 0.02, "bad_release": 0.02, "cdn_failure": 0.25,
+      "geo_ip_block": 0.85, "webserver_misconfig": 0.25, "disk_full": 0.02,
+      "ddos_attack": 0.85
+    },
+    "dns_error_in_browser": {
+      "dns_failure": 0.85, "tls_cert_expired": 0.02, "server_overload": 0.02,
+      "site_db_failure": 0.02, "bad_release": 0.02, "cdn_failure": 0.02,
+      "geo_ip_block": 0.02, "webserver_misconfig": 0.02, "disk_full": 0.02,
+      "ddos_attack": 0.02
+    },
+    "reachable_by_ip_not_by_name": {
+      "dns_failure": 0.85, "tls_cert_expired": 0.02, "server_overload": 0.02,
+      "site_db_failure": 0.02, "bad_release": 0.02, "cdn_failure": 0.02,
+      "geo_ip_block": 0.02, "webserver_misconfig": 0.02, "disk_full": 0.02,
+      "ddos_attack": 0.02
+    },
+    "unavailable_from_some_regions": {
+      "dns_failure": 0.25, "tls_cert_expired": 0.02, "server_overload": 0.02,
+      "site_db_failure": 0.02, "bad_release": 0.02, "cdn_failure": 0.25,
+      "geo_ip_block": 0.85, "webserver_misconfig": 0.02, "disk_full": 0.02,
+      "ddos_attack": 0.25
+    },
+    "browser_cert_warning": {
+      "dns_failure": 0.02, "tls_cert_expired": 0.85, "server_overload": 0.02,
+      "site_db_failure": 0.02, "bad_release": 0.02, "cdn_failure": 0.02,
+      "geo_ip_block": 0.02, "webserver_misconfig": 0.25, "disk_full": 0.02,
+      "ddos_attack": 0.02
+    },
+    "http_500": {
+      "dns_failure": 0.02, "tls_cert_expired": 0.02, "server_overload": 0.25,
+      "site_db_failure": 0.85, "bad_release": 0.85, "cdn_failure": 0.02,
+      "geo_ip_block": 0.02, "webserver_misconfig": 0.85, "disk_full": 0.85,
+      "ddos_attack": 0.02
+    },
+    "http_502": {
+      "dns_failure": 0.02, "tls_cert_expired": 0.02, "server_overload": 0.25,
+      "site_db_failure": 0.02, "bad_release": 0.25, "cdn_failure": 0.25,
+      "geo_ip_block": 0.02, "webserver_misconfig": 0.85, "disk_full": 0.02,
+      "ddos_attack": 0.25
+    },
+    "http_503": {
+      "dns_failure": 0.02, "tls_cert_expired": 0.02, "server_overload": 0.85,
+      "site_db_failure": 0.25, "bad_release": 0.02, "cdn_failure": 0.02,
+      "geo_ip_block": 0.02, "webserver_misconfig": 0.25, "disk_full": 0.25,
+      "ddos_attack": 0.85
+    },
+    "http_504": {
+      "dns_failure": 0.02, "tls_cert_expired": 0.02, "server_overload": 0.85,
+      "site_db_failure": 0.02, "bad_release": 0.02, "cdn_failure": 0.25,
+      "geo_ip_block": 0.02, "webserver_misconfig": 0.02, "disk_full": 0.02,
+      "ddos_attack": 0.85
+    },
+    "db_error_in_page": {
+      "dns_failure": 0.02, "tls_cert_expired": 0.02, "server_overload": 0.02,
+      "site_db_failure": 0.85, "bad_release": 0.25, "cdn_failure": 0.02,
+      "geo_ip_block": 0.02, "webserver_misconfig": 0.02, "disk_full": 0.25,
+      "ddos_attack": 0.02
+    },
+    "slow_loading": {
+      "dns_failure": 0.02, "tls_cert_expired": 0.02, "server_overload": 0.85,
+      "site_db_failure": 0.25, "bad_release": 0.02, "cdn_failure": 0.85,
+      "geo_ip_block": 0.02, "webserver_misconfig": 0.02, "disk_full": 0.25,
+      "ddos_attack": 0.85
+    },
+    "partial_content": {
+      "dns_failure": 0.02, "tls_cert_expired": 0.02, "server_overload": 0.25,
+      "site_db_failure": 0.25, "bad_release": 0.85, "cdn_failure": 0.85,
+      "geo_ip_block": 0.02, "webserver_misconfig": 0.25, "disk_full": 0.25,
+      "ddos_attack": 0.25
+    },
+    "static_assets_missing": {
+      "dns_failure": 0.02, "tls_cert_expired": 0.25, "server_overload": 0.25,
+      "site_db_failure": 0.02, "bad_release": 0.25, "cdn_failure": 0.85,
+      "geo_ip_block": 0.02, "webserver_misconfig": 0.85, "disk_full": 0.02,
+      "ddos_attack": 0.25
+    },
+    "started_after_release": {
+      "dns_failure": 0.02, "tls_cert_expired": 0.02, "server_overload": 0.02,
+      "site_db_failure": 0.02, "bad_release": 0.85, "cdn_failure": 0.02,
+      "geo_ip_block": 0.02, "webserver_misconfig": 0.25, "disk_full": 0.02,
+      "ddos_attack": 0.02
+    },
+    "write_operations_fail": {
+      "dns_failure": 0.02, "tls_cert_expired": 0.25, "server_overload": 0.25,
+      "site_db_failure": 0.85, "bad_release": 0.25, "cdn_failure": 0.02,
+      "geo_ip_block": 0.02, "webserver_misconfig": 0.02, "disk_full": 0.85,
+      "ddos_attack": 0.02
+    }
+  }
+}
