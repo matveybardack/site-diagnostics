@@ -1,0 +1,6 @@
+PySide6==6.12.0
+psycopg[binary,pool]==3.3.6
+pgmpy==1.1.2
+matplotlib==3.11.2
+python-dotenv==1.2.4
+argon2-cffi==25.1.0
