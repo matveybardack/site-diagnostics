@@ -1,0 +1,28 @@
+{
+  "established": 0.60,
+  "probable": 0.30,
+  "min_gap": 0.15,
+  "severity": {
+    "dns_failure": 4,
+    "tls_cert_expired": 3,
+    "server_overload": 3,
+    "site_db_failure": 5,
+    "bad_release": 4,
+    "cdn_failure": 3,
+    "geo_ip_block": 2,
+    "webserver_misconfig": 4,
+    "disk_full": 4,
+    "ddos_attack": 5
+  },
+  "conflicts": [
+    ["site_unreachable", "partial_content"],
+    ["site_unreachable", "slow_loading"],
+    ["site_unreachable", "http_500"],
+    ["site_unreachable", "http_502"],
+    ["site_unreachable", "http_503"],
+    ["site_unreachable", "http_504"],
+    ["site_unreachable", "db_error_in_page"],
+    ["site_unreachable", "static_assets_missing"],
+    ["site_unreachable", "write_operations_fail"]
+  ]
+}

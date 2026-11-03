@@ -1,0 +1,130 @@
+{
+  "tolerance": 0.005,
+  "scenarios": [
+    {
+      "id": "dns_typical",
+      "symptoms": ["dns_error_in_browser", "reachable_by_ip_not_by_name"],
+      "expected_leader": "dns_failure",
+      "expected_leader_probability": 0.995,
+      "expected_category": "established",
+      "expect_conflict": false,
+      "note": "типичный случай для DNS"
+    },
+    {
+      "id": "tls_typical",
+      "symptoms": ["browser_cert_warning"],
+      "expected_leader": "tls_cert_expired",
+      "expected_leader_probability": 0.651,
+      "expected_category": "established",
+      "expect_conflict": false,
+      "note": "один симптом, но очень специфичный; вторая причина webserver_misconfig (0.230). Ручной расчёт в разделе 2"
+    },
+    {
+      "id": "overload_typical",
+      "symptoms": ["http_503", "http_504", "slow_loading"],
+      "expected_leader": "server_overload",
+      "expected_leader_probability": 0.759,
+      "expected_category": "established",
+      "expect_conflict": false,
+      "note": "типичный случай для перегрузки; конкурент ddos_attack (0.237)"
+    },
+    {
+      "id": "db_typical",
+      "symptoms": ["db_error_in_page", "write_operations_fail"],
+      "expected_leader": "site_db_failure",
+      "expected_leader_probability": 0.660,
+      "expected_category": "established",
+      "expect_conflict": false,
+      "note": "db_error_in_page отличает отказ БД от disk_full (0.194)"
+    },
+    {
+      "id": "release_typical",
+      "symptoms": ["started_after_release", "http_500", "partial_content"],
+      "expected_leader": "bad_release",
+      "expected_leader_probability": 0.938,
+      "expected_category": "established",
+      "expect_conflict": false,
+      "note": "типичный случай для ошибки релиза"
+    },
+    {
+      "id": "cdn_typical",
+      "symptoms": ["static_assets_missing", "partial_content", "slow_loading"],
+      "expected_leader": "cdn_failure",
+      "expected_leader_probability": 0.795,
+      "expected_category": "established",
+      "expect_conflict": false,
+      "note": "типичный случай для CDN"
+    },
+    {
+      "id": "geo_typical",
+      "symptoms": ["unavailable_from_some_regions", "site_unreachable"],
+      "expected_leader": "geo_ip_block",
+      "expected_leader_probability": 0.481,
+      "expected_category": "probable",
+      "expect_conflict": false,
+      "note": "лидер верный, но p < 0.60, поэтому только «вероятно»; вторая причина dns_failure (0.283)"
+    },
+    {
+      "id": "misconfig_typical",
+      "symptoms": ["http_502", "static_assets_missing", "http_500"],
+      "expected_leader": "webserver_misconfig",
+      "expected_leader_probability": 0.855,
+      "expected_category": "established",
+      "expect_conflict": false,
+      "note": "типичный случай для конфигурации веб-сервера"
+    },
+    {
+      "id": "ddos_typical",
+      "symptoms": ["http_503", "http_504", "slow_loading", "unavailable_from_some_regions"],
+      "expected_leader": "ddos_attack",
+      "expected_leader_probability": 0.789,
+      "expected_category": "established",
+      "expect_conflict": false,
+      "note": "site_unreachable не берётся: он в conflicts с http_503/http_504"
+    },
+    {
+      "id": "ambiguous_disk_vs_db",
+      "symptoms": ["http_500", "write_operations_fail"],
+      "expected_leader": null,
+      "expected_leader_any": ["disk_full", "site_db_failure"],
+      "expected_leader_probability": 0.347,
+      "expected_category": "probable",
+      "expect_conflict": false,
+      "note": "модель не различает disk_full и site_db_failure по этим симптомам: вероятности равны (по 0.347)"
+    },
+    {
+      "id": "ambiguous_500_only",
+      "symptoms": ["http_500"],
+      "expected_leader": "bad_release",
+      "expected_leader_probability": 0.349,
+      "expected_category": "probable",
+      "expect_conflict": false,
+      "note": "один неспецифичный симптом; вторая причина webserver_misconfig (0.233)"
+    },
+    {
+      "id": "single_503",
+      "symptoms": ["http_503"],
+      "expected_leader": "server_overload",
+      "expected_leader_probability": 0.526,
+      "expected_category": "probable",
+      "expect_conflict": false,
+      "note": "единственный симптом; вторая причина ddos_attack (0.164)"
+    },
+    {
+      "id": "conflict_unreachable_and_502",
+      "symptoms": ["site_unreachable", "http_502"],
+      "expected_leader": null,
+      "expected_category": "probable",
+      "expect_conflict": true,
+      "note": "противоречивые симптомы: расчёт идёт без исключения, пользователь получает предупреждение; конкретный лидер не проверяется"
+    },
+    {
+      "id": "empty",
+      "symptoms": [],
+      "expected_leader": null,
+      "expected_category": "insufficient",
+      "expect_conflict": false,
+      "note": "без симптомов: результат равен приорам, категория «недостаточно данных». На уровне сервиса пустой ввод отклоняется валидацией (F-1), поэтому сценарий проверяет только движок"
+    }
+  ]
+}
