@@ -93,3 +93,21 @@ class SortSpec:
 
     column: SortColumn
     descending: bool = True
+
+HistogramMode = Literal["hour", "day"]
+
+
+@dataclass(frozen=True, slots=True)
+class RequestPage:
+    items: tuple[RequestRecord, ...]
+    total: int  # всего записей по фильтру
+    page: int  # номер страницы, с 0
+    page_size: int
+
+
+@dataclass(frozen=True, slots=True)
+class ReportSummary:
+    total: int
+    avg_confidence: float | None  # None, если запросов нет
+    cause_counts: tuple[tuple[str, int], ...]  # (код причины, число), по убыванию числа
+    top_important: tuple[RequestRecord, ...]

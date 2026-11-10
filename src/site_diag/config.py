@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from dotenv import load_dotenv
-
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from site_diag.exceptions import ConfigError
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -35,6 +35,7 @@ class Settings:
     log_level: str
     auto_migrate: bool
     project_root: Path = PROJECT_ROOT
+    report_timezone: str = "UTC"
 
     @property
     def dsn(self) -> str:
@@ -65,6 +66,7 @@ class Settings:
         return (
             f"Settings(db_host={self.db_host!r}, db_port={self.db_port}, "
             f"db_name={self.db_name!r}, db_user={self.db_user!r}, "
+            f"report_timezone={self.report_timezone!r}, "
             f"log_level={self.log_level!r}, auto_migrate={self.auto_migrate})"
         )
 
@@ -104,6 +106,14 @@ def load_settings(env_file: Path | None = None) -> Settings:
     else:
         raise ConfigError("AUTO_MIGRATE должен быть true или false")
 
+    report_timezone = os.getenv("REPORT_TIMEZONE", "").strip() or "UTC"
+    try:
+        ZoneInfo(report_timezone)
+    except (ZoneInfoNotFoundError, ValueError):
+        raise ConfigError(
+            f"REPORT_TIMEZONE: неизвестный часовой пояс {report_timezone!r}"
+        ) from None
+
     return Settings(
         db_host=os.environ["DB_HOST"].strip(),
         db_port=db_port,
@@ -112,4 +122,5 @@ def load_settings(env_file: Path | None = None) -> Settings:
         db_password=os.environ["DB_PASSWORD"],
         log_level=log_level,
         auto_migrate=auto_migrate,
+        report_timezone=report_timezone,
     )
