@@ -3,10 +3,11 @@ from __future__ import annotations
 import logging
 
 from PySide6.QtCore import QObject, QRunnable, Qt, QThreadPool, QTimer, Signal
-from PySide6.QtGui import QCloseEvent
+from PySide6.QtGui import QCloseEvent, QShortcut, QKeySequence
 from PySide6.QtWidgets import QLabel, QMainWindow, QTabWidget, QWidget
 
 from site_diag.context import AppContext
+from site_diag.ui.theme import set_state
 
 log = logging.getLogger(__name__)
 
@@ -73,6 +74,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self._tabs)
 
         self._db_label = QLabel(DB_UNKNOWN)
+        self._db_label.setObjectName("dbStatus")
         self._model_label = QLabel(f"Модель: {ctx.model_version}")
         status = self.statusBar()
         status.addWidget(self._db_label, 1)
@@ -89,6 +91,8 @@ class MainWindow(QMainWindow):
         self._timer.timeout.connect(self.check_db_now)
         self._timer.start()
         QTimer.singleShot(0, self.check_db_now)  # первая проверка сразу после показа
+        QShortcut(QKeySequence("Ctrl+1"), self).activated.connect(lambda: self._tabs.setCurrentIndex(0))
+        QShortcut(QKeySequence("Ctrl+2"), self).activated.connect(lambda: self._tabs.setCurrentIndex(1))
 
     # ---------- вкладки ----------
 
@@ -124,7 +128,7 @@ class MainWindow(QMainWindow):
     def _on_probe_finished(self, ok: bool) -> None:
         self._probe_running = False
         self._db_label.setText(DB_OK if ok else DB_DOWN)
-        self._db_label.setStyleSheet("color: #2e7d32;" if ok else "color: #c62828; font-weight: bold;")
+        set_state(self._db_label, "state", "ok" if ok else "down")
         if ok != self._db_available:
             log.info("Состояние БД: %s", "подключена" if ok else "нет связи")
             self._db_available = ok
