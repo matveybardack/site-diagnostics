@@ -52,3 +52,6 @@ QProgressBar:disabled::chunk { background-color: #9aa0a6; }
 /* строка состояния */
 QLabel#dbStatus[state="ok"] { color: #2e9e57; }
 QLabel#dbStatus[state="down"] { color: #d64545; font-weight: bold; }
+
+/* диалог входа */
+QLabel#loginError { color: #d64545; font-weight: bold; }
