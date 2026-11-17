@@ -29,6 +29,7 @@ from site_diag.services.report_service import ReportService  # noqa: E402
 from site_diag.ui.main_window import MainWindow  # noqa: E402
 from site_diag.ui.diagnosis_view import DiagnosisView  # noqa: E402
 from site_diag.ui.theme import apply_theme  # noqa: E402
+from site_diag.ui.admin_view import AdminView  # noqa: E402
 
 log = logging.getLogger(__name__)
 
@@ -107,6 +108,7 @@ def main() -> int:
     app.aboutToQuit.connect(ctx.close)
     window = MainWindow(ctx)
     window.set_diagnosis_view(DiagnosisView(ctx))
+    window.set_admin_view(AdminView(ctx))
     window.show()
     return app.exec()
 

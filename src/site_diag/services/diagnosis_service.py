@@ -7,8 +7,8 @@ from datetime import datetime
 from site_diag.data.reference_repository import ReferenceRepository
 from site_diag.data.audit_repository import AuditEvent, AuditRepository
 from site_diag.data.diagnosis_repository import DiagnosisRepository
-from site_diag.domain.models import DiagnosisResult
-from site_diag.exceptions import ModelError, ValidationError
+from site_diag.domain.models import DiagnosisResult, RequestDetails
+from site_diag.exceptions import AppError, ModelError, ValidationError
 from site_diag.inference.engine import InferenceEngine
 from site_diag.inference.evidence import build_evidence, find_conflicts
 from site_diag.inference.explanation import explain
@@ -187,6 +187,54 @@ class DiagnosisService:
             result.importance, len(evidence),
         )
         return result
+
+    # сохранённые запросы
+
+    def explain_codes(
+        self, codes: Iterable[str], leader_code: str | None = None
+    ) -> tuple[str, ...]:
+        """Пояснение по набору симптомов (для уже сохранённых запросов). Не пишет в БД.
+
+        leader_code: причина, которую нужно пояснить; по умолчанию лидер расчёта.
+        """
+        _, evidence = self._evidence(codes)
+        if not self._engine.evidence_possible(evidence):
+            return (_IMPOSSIBLE_TEXT,)
+        if leader_code is None:
+            leader_code = confidence(rank(self._engine.posterior(evidence))).leader_code
+        return explain(
+            self._engine,
+            evidence,
+            leader_code,
+            symptom_labels=self._symptom_labels,
+            cause_labels=self._cause_labels,
+        )
+
+    def get_request_details(self, request_id: int) -> RequestDetails:
+        """Запрос со всеми вероятностями и пересчитанным пояснением (H-6).
+
+        Пояснение в БД не хранится. Его пересчитывают по сохранённым симптомам, но
+        только если запрос обработан текущей версией модели: иначе пояснение могло
+        бы противоречить сохранённым вероятностям.
+        ValidationError: запрос не найден. DatabaseUnavailableError: БД недоступна.
+        """
+        record = self._diagnosis_repo.get_by_id(request_id)
+        if record is None:
+            raise ValidationError("Запрос не найден: возможно, он был удалён.")
+
+        if record.model_version != self._engine.version:
+            return RequestDetails(
+                record,
+                (),
+                f"Пояснение недоступно: запрос обработан моделью {record.model_version}, "
+                f"а в приложении сейчас используется {self._engine.version}.",
+            )
+        try:
+            explanation = self.explain_codes(record.symptom_codes, record.top_cause_code)
+        except AppError:
+            log.warning("Не удалось пересчитать пояснение запроса %s", request_id, exc_info=True)
+            return RequestDetails(record, (), "Пояснение недоступно.")
+        return RequestDetails(record, explanation)
 
     # сохранение
 

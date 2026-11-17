@@ -55,3 +55,7 @@ QLabel#dbStatus[state="down"] { color: #d64545; font-weight: bold; }
 
 /* диалог входа */
 QLabel#loginError { color: #d64545; font-weight: bold; }
+
+/* сводный отчёт */
+QLabel#statValue { font-size: 22pt; font-weight: bold; }
+QLabel#reportError { color: #d64545; font-weight: bold; }

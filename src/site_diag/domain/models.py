@@ -111,3 +111,11 @@ class ReportSummary:
     avg_confidence: float | None  # None, если запросов нет
     cause_counts: tuple[tuple[str, int], ...]  # (код причины, число), по убыванию числа
     top_important: tuple[RequestRecord, ...]
+
+@dataclass(frozen=True, slots=True)
+class RequestDetails:
+    """Сохранённый запрос с пересчитанным пояснением (карточка администратора)."""
+
+    record: RequestRecord  # с симптомами и вероятностями всех причин
+    explanation: tuple[str, ...]
+    explanation_note: str | None = None  # почему пояснения нет или оно неполное

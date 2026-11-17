@@ -105,6 +105,11 @@ class RequestsTableModel(QAbstractTableModel):
     def is_loading(self) -> bool:
         return self._loading
 
+    @property
+    def sort_spec(self) -> SortSpec | None:
+        """Текущая сортировка (None = порядок по умолчанию). Нужна экспорту CSV."""
+        return self._sort
+
     def record(self, row: int) -> RequestRecord | None:
         return self._rows[row] if 0 <= row < len(self._rows) else None
 

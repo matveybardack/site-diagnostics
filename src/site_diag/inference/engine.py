@@ -56,6 +56,15 @@ class InferenceEngine:
     def symptom_codes(self) -> frozenset[str]:
         return self._symptoms
 
+    def present_probability(self, symptom: str, cause: str) -> float:
+        """P(симптом наблюдается | причина) из таблицы условных вероятностей модели."""
+        try:
+            return self._present[symptom][cause]
+        except KeyError:
+            raise ValidationError(
+                f"В модели нет пары симптом/причина: {symptom!r} / {cause!r}"
+            ) from None
+
     def _check_evidence(self, evidence: Mapping[str, str]) -> None:
         for node, state in evidence.items():
             if node not in self._symptoms:
